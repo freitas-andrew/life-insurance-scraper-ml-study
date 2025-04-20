@@ -85,7 +85,6 @@ def main():
         writer.writerows(results)
     print(f"📁 All done — exported to '{file_name}', in {output_path}")
 
-#TODO: REMEMBER TO REMOVE STATE COLUMN WHEN SCRAPIGN FINISHED and TERMS -> TERM
 
 def extract_risk_info(driver, quote_form, ages, genders, nicotine_status):
     """Inputs risk info into form and extracts the associated URL for each risk combo.
@@ -161,7 +160,7 @@ def extract_risk_info(driver, quote_form, ages, genders, nicotine_status):
 
                 except Exception as e:
                     print(f"❌ Error Collecting Url for: Age {age}, {gender}, {nic}: {e}")
-    return url_results #TODO@ change name
+    return url_results
                 
 
 def scrape_combos(driver, current_url, coverage_amounts, term_lengths, age, gender, nic):
