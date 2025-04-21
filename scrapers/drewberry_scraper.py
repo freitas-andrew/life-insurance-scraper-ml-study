@@ -62,13 +62,7 @@ def main():
                     break
                 print(f"🔁 Retrying failed combos... ({i})")
                 new_failed = []
-                # driver.get() # Reloading the page
                 for combo in failed:
-                    # Unpacks each item in "combo" into separate single-item lists for passing to scrape_combinations
-                    # partial_results, partial_failed = scrape_combos(driver, *[[x] for x in combo])
-                    # results.extend(partial_results)      # Adding to results
-                    # new_failed.extend(partial_failed)    # Collecting still-failing combos
-
                     # Run the scraping function with specific inputs
                     retry_results, retry_failed = scrape_combos(driver, combo[5], [combo[0]], [combo[1]], combo[2], combo[3], combo[4])
                     results.extend(retry_results)
