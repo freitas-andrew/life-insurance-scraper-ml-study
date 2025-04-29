@@ -77,34 +77,44 @@ def scrape_combos(driver, quote_url, coverage_amounts, term_lengths, ages, gende
     
     driver.get(quote_url) # Reloading the page
     
-    # Filling out initial form to have preset BMI, Health Rating, 1st Jan DOB and State as Alabama (upon analysis, state does not affect premiums)
-    time.sleep(1)
-    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[1]/div[4]/label[1]/strong/span") # Selecting Male
-    time.sleep(1)
-    select_dropdown(driver, field_name="coverage", value="100000",) # Selection $100,000 cover
-    time.sleep(1)
-    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[3]/div[4]/label[1]/strong/span") # Selecting 10 Year Term
-    time.sleep(1)
-    select_dropdown(driver, field_name="state", value="Alabama", by_visible_text=True) # Selecting stateas Alabama
-    time.sleep(1)
-    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[5]/div[4]/label[1]/strong") # Selecting "No" to used nicotine products
-    time.sleep(1)
-    # Selecting month, day and year of birth
-    text_input(driver, field_name='//*[@id="mm"]', value="1", by_xpath=True)
-    text_input(driver, field_name='//*[@id="dd"]', value="1", by_xpath=True)
-    text_input(driver, field_name='//*[@id="yyyy"]', value="2000", by_xpath=True)
-    time.sleep(1)
-    # Inputting average height and weight which correspond to an average BMI
-    text_input(driver, field_name="height", value="510")
-    text_input(driver, field_name="weight", value="167")
-    time.sleep(1)
-    # Selecting average health
-    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[9]/div[4]/div[2]/label/strong")
+    current_url = driver.current_url#
+    # Checking if redirected to continue page (happens when retrying)
+    if "#continue" in current_url:
+        time.sleep(1)
+        driver.find_element(By.XPATH, "/html/body/div[1]/div[4]/div/div[3]/a[1]").click() # Clicking continue button if redirected to continue page
+        time.sleep(1)
+        select_dropdown(driver, field_name="coverage", value="100000",) # Selecting "$100,000" cover
+        time.sleep(1)
+        select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[3]/div[4]/label[1]/strong/span") # Selecting 10 Year Term
+        time.sleep(3)
+        
+    else:
+        # Filling out initial form to have preset BMI, Health Rating, 1st Jan DOB and State as Alabama (upon analysis, state does not affect premiums)
+        time.sleep(1)
+        select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[1]/div[4]/label[1]/strong/span") # Selecting "Male"
+        time.sleep(1)
+        select_dropdown(driver, field_name="coverage", value="100000",) # Selecting "$100,000" cover
+        time.sleep(1)
+        select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[3]/div[4]/label[1]/strong/span") # Selecting 10 Year Term
+        time.sleep(1)
+        select_dropdown(driver, field_name="state", value="Alabama", by_visible_text=True) # Selecting state as Alabama
+        time.sleep(1)
+        select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[5]/div[4]/label[1]/strong") # Selecting "No" to used nicotine products
+        time.sleep(1)
+        # Selecting month, day and year of birth
+        text_input(driver, field_name='//*[@id="mm"]', value="1", by_xpath=True)
+        text_input(driver, field_name='//*[@id="dd"]', value="1", by_xpath=True)
+        text_input(driver, field_name='//*[@id="yyyy"]', value="2000", by_xpath=True)
+        time.sleep(1)
+        # Inputting average height and weight which correspond to an average BMI
+        text_input(driver, field_name="height", value="510")
+        text_input(driver, field_name="weight", value="167")
+        time.sleep(1)
+        select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[9]/div[4]/div[2]/label/strong") # Selecting "Average" health
+        time.sleep(3)
     
-    ensure_page_ready(driver, xpath="div[x-show='loading && !resultsModalOpen']")
+    ensure_page_ready(driver, xpath="div[x-show='loading && !resultsModalOpen']") # Ensuring premiums page has been fully loaded
     
-    
-
     # Iterating through each possible combo of variables
     for coverage in coverage_amounts:
         for term in term_lengths:
@@ -135,9 +145,9 @@ def scrape_combos(driver, quote_url, coverage_amounts, term_lengths, ages, gende
                                 all_data.append((coverage, term, age, gender, nic, premium))
 
                             if premiums:
-                                print(f"✅ Done: {coverage}, {term} Year Term: Age {age}, {gender}, {nic}") # Printing current combo completed
+                                print(f"✅ Done: {coverage}, {term}: Age {age}, {gender}, {nic}") # Printing current combo completed
                             else:
-                                print(f"⏭️  Skipping: No quotes found for {coverage}, {term}, Year Term: Age {age}, {gender}, {nic}")
+                                print(f"⏭️  Skipping: No quotes found for {coverage}, {term}: Age {age}, {gender}, {nic}")
                                 
                         except Exception as e:
                             print(f"❌ Error on combo: {coverage}, {term}: Age {age}, {gender}, {nic}: {e}")
