@@ -102,21 +102,26 @@ def select_checkbox(driver, xpath):
         raise
     
 
-def text_input(driver, field_name, value):
+def text_input(driver, field_name, value, by_xpath=False):
     """Finds the input field by its name attribute and types the specified text into it.
 
     Args:
         field_name (str): The 'name' attribute for which to find the input field by.
         value (str): The text value to input into the field.
+        by_xpath (bool): Whether to select by xpath (True) or name (False).
     """
     
     try:
-        # Locating the input element using its name attribute
-        input_element = driver.find_element(By.NAME, field_name)
-        
+        # Locating the input element by xpath
+        if by_xpath == True:
+            input_element = driver.find_element(By.XPATH, field_name)
+        else:
+            # Locating the input element using its name attribute
+            input_element = driver.find_element(By.NAME, field_name)
+
         # Clearing existing text
         input_element.clear()
-        
+
         # Sending input text
         input_element.send_keys(value)
     except Exception as e:

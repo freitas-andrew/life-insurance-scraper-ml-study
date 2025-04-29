@@ -2,16 +2,30 @@
 import csv
 from datetime import datetime
 from pathlib import Path
+import time
 
 # Third-party libraries
 from selenium.webdriver.common.by import By
 
 # Local imports
-from utils import * # Imports init_driver, edit_page_context, select_dropdown, select_checkbox, ensure_page_ready and entire data sample
+from utils import * # Imports init_driver, edit_page_context, select_dropdown, select_checkbox, text_input, ensure_page_ready and entire data sample
+
+"""
+IMPORTANT NOTE:
+At the time of data collection, the site https://quoter.lifeinsure.com did not and still does not appear to have scraping restrictions in place — either via
+a restrictive robots.txt file or active enforcement mechanisms. Scraping was conducted carefully and responsibly over multiple days without interuption, 
+indicating that restrictions were absent or not actively enforced during that period. However, an eventual IP block (which only occurred after the aforementioned 
+prolonged access), suggests that stricter anti-bot measures were introduced after the main bulk of the data collection, or that excessive scraping raised a flag.
+
+CAUTION: 
+Although the scraping programme still works — and limited scrapinng seems to garner no immediate action — future scraping attempts (especially in high volumes) on this site 
+may lead to an IP ban for this website, or other enforcement actions, as current restrictions appear to be more aggressive than during the original data collection. 
+"""
+
 
 def main():
-    # lifeinsure quote w/preset BMI, Health Rating, 1st Jan DOB and State as Hawaii (upon analysis, state does not affect premiums)
-    quote_url = "https://quoter.lifeinsure.com/results?quote=fbSu2A4b44Pfg7WkYqUiBx2KPfVafAUM" 
+    # lifeinsure quote portal
+    quote_url = "https://quoter.lifeinsure.com/#gender" 
     
     nicotine_status = ["Current user", "Never Used"] # Required format for matching later
     
@@ -62,7 +76,34 @@ def scrape_combos(driver, quote_url, coverage_amounts, term_lengths, ages, gende
     failed_combos = []
     
     driver.get(quote_url) # Reloading the page
-    ensure_page_ready(driver, xpath="div[x-show='loading && !resultsModalOpen']") # Waiting for page to load
+    
+    # Filling out initial form to have preset BMI, Health Rating, 1st Jan DOB and State as Alabama (upon analysis, state does not affect premiums)
+    time.sleep(1)
+    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[1]/div[4]/label[1]/strong/span") # Selecting Male
+    time.sleep(1)
+    select_dropdown(driver, field_name="coverage", value="100000",) # Selection $100,000 cover
+    time.sleep(1)
+    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[3]/div[4]/label[1]/strong/span") # Selecting 10 Year Term
+    time.sleep(1)
+    select_dropdown(driver, field_name="state", value="Alabama", by_visible_text=True) # Selecting stateas Alabama
+    time.sleep(1)
+    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[5]/div[4]/label[1]/strong") # Selecting "No" to used nicotine products
+    time.sleep(1)
+    # Selecting month, day and year of birth
+    text_input(driver, field_name='//*[@id="mm"]', value="1", by_xpath=True)
+    text_input(driver, field_name='//*[@id="dd"]', value="1", by_xpath=True)
+    text_input(driver, field_name='//*[@id="yyyy"]', value="2000", by_xpath=True)
+    time.sleep(1)
+    # Inputting average height and weight which correspond to an average BMI
+    text_input(driver, field_name="height", value="510")
+    text_input(driver, field_name="weight", value="167")
+    time.sleep(1)
+    # Selecting average health
+    select_checkbox(driver, xpath="/html/body/div[1]/div[3]/form/div[9]/div[4]/div[2]/label/strong")
+    
+    ensure_page_ready(driver, xpath="div[x-show='loading && !resultsModalOpen']")
+    
+    
 
     # Iterating through each possible combo of variables
     for coverage in coverage_amounts:
