@@ -1,0 +1,14 @@
+name: life-scraper-ml
+channels:
+  - conda-forge
+dependencies:
+  - pip
+  - pandas
+  - shap
+  - matplotlib
+  - scikit-learn
+  - numpy
+  - selenium
+  - notebook
+  - seaborn
+  - webdriver-manager
