@@ -18,7 +18,7 @@ def main():
     # Initial quote form which asks for risk information: age, gender, and nicotine status (quotes are on page after) 
     quote_form = "https://www.drewberryinsurance.co.uk/life-insurance/life-insurance-quote"
     
-    driver = init_driver(headless=False) # Initialising driver
+    driver = init_driver() # Initialising driver
     
     # Path of CSV w/URLs and their data
     u_file_name = "drewberry_urls.csv"
