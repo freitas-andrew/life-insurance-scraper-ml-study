@@ -158,5 +158,6 @@ Executes the `report.ipynb` notebook to refresh outputs, summaries, and visualiz
 <!-- DETAILS -->
 ## 🔍 Details
 
-- **Author:** [_**Andrew Freitas**_](https://github.com/freitas-andrew/life-insurance-scraper-ml-study)
-- **Source code:** [_GitHub Repository_](https://github.com/freitas-andrew/life-insurance-scraper-ml-study/tree/master/scrapers)
+- **Author:** [_**Andrew Freitas**_](https://github.com/freitas-andrew/)
+- **Source code:** [_GitHub Repository_](https://github.com/freitas-andrew/life-insurance-scraper-ml-study/)
+
